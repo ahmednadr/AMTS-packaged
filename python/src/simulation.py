@@ -1,4 +1,3 @@
-import subprocess
 from py4j.java_gateway import JavaGateway,CallbackServerParameters
 
 class Simulation():
@@ -40,7 +39,7 @@ class Simulation():
     def Create_PythonBroker(self ,name:str):
         return self.gateway.Create_PythonBroker(self.sim, name)
     
-    def Crate_PythonContainer(self,pes:int,minUtilization:float,maxUtilization:float,ConcurrencyValue:int):
+    def Create_PythonContainer(self,pes:int,minUtilization:float,maxUtilization:float,ConcurrencyValue:int):
         return self.gateway.Create_PythonContainer(pes, minUtilization,  maxUtilization, ConcurrencyValue )
     
     def addOnClickTickListener(self,method): #method must have signature (event)
@@ -56,14 +55,25 @@ class Simulation():
             self.ListenerCall(m,event)
         return
 
-    def start(self): #should start the jar file
-        
+    def start(self):
+        print('simulation started')
         return self.sim.start() 
     
-    def stop(self): #should stop the jar file then stop the gateway process
-        self.gateway.close()
-        self.gateway.stop()
-
+    def stop(self):
+        try:
+            self.gateway.close()
+            self.gateway.shutdown()
+        except:
+            return
+    def stop_with_full_pbar(self,pbar,v):
+        pbar.n=v
+        pbar.refresh()
+        try:
+            self.gateway.close()
+            self.gateway.shutdown()
+        except:
+            return
+    
     def __getattr__(self, name):
         def method(*args,**kwargs):
             return getattr(self.gateway,name)(*args,**kwargs)

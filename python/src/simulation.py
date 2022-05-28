@@ -27,9 +27,12 @@ class Simulation():
     def Create_Orchestrator(self,MinInstances:int,maxutil:float,minutil:float,ConcurrencyValue:int):
         return self.gateway.Create_Orchestrator(self.sim,MinInstances,maxutil,minutil,ConcurrencyValue)
     
-    def Create_CPUMonitor(self,WriteToFile:bool):
-        return self.gateway.Create_CPUMonitor(self.sim,WriteToFile)
+    def Create_CPUMonitor(self,WriteToFile:bool,path:str,ReportMI:int,ReportBW:int):
+        return self.gateway.Create_CPUMonitor(self.sim,WriteToFile,path,ReportMI,ReportBW)
 
+    def Create_BWMonitor(self,WriteToFile:bool,path:str,ReportMI:int,ReportBW:int):
+        return self.gateway.Create_BWMonitor(self.sim,WriteToFile,path,ReportMI,ReportBW)
+        
     def Create_HostList(self):
         return self.gateway.Create_HostList()
     

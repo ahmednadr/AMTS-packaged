@@ -6,7 +6,7 @@ class Simulation():
         self.gateway = JavaGateway(
         callback_server_parameters=CallbackServerParameters())
         self.sim = self.gateway.Create_sim()
-        if Termination_time > 0:
+        if Termination_time>0:
             self.sim.terminateAt(Termination_time)
         self.onClockTickListenerList = [] 
         self.gateway.registerListener(self)
@@ -21,8 +21,6 @@ class Simulation():
     def Create_Workload(self,path:str):
         return self.gateway.Create_Workload(path)
     
-    def Create_Orchestrator(self,MinInstances:int):
-        return self.gateway.Create_Orchestrator(self.sim,MinInstances)
     
     def Create_Orchestrator(self,MinInstances:int,maxutil:float,minutil:float,ConcurrencyValue:int):
         return self.gateway.Create_Orchestrator(self.sim,MinInstances,maxutil,minutil,ConcurrencyValue)
@@ -30,9 +28,6 @@ class Simulation():
     def Create_CPUMonitor(self,WriteToFile:bool,path:str,ReportMI:int,ReportBW:int):
         return self.gateway.Create_CPUMonitor(self.sim,WriteToFile,path,ReportMI,ReportBW)
 
-    def Create_BWMonitor(self,WriteToFile:bool,path:str,ReportMI:int,ReportBW:int):
-        return self.gateway.Create_BWMonitor(self.sim,WriteToFile,path,ReportMI,ReportBW)
-        
     def Create_HostList(self):
         return self.gateway.Create_HostList()
     
@@ -42,7 +37,7 @@ class Simulation():
     def Create_PythonBroker(self ,name:str):
         return self.gateway.Create_PythonBroker(self.sim, name)
     
-    def Create_PythonContainer(self,pes:int,minUtilization:float,maxUtilization:float,ConcurrencyValue:int):
+    def Crate_PythonContainer(self,pes:int,minUtilization:float,maxUtilization:float,ConcurrencyValue:int):
         return self.gateway.Create_PythonContainer(pes, minUtilization,  maxUtilization, ConcurrencyValue )
     
     def addOnClickTickListener(self,method): #method must have signature (event)
@@ -58,10 +53,8 @@ class Simulation():
             self.ListenerCall(m,event)
         return
 
-    def start(self):
-        print('simulation started')
+    def start(self): #should start the jar file
         return self.sim.start() 
-    
     def stop(self):
         try:
             self.gateway.close()
@@ -76,7 +69,6 @@ class Simulation():
             self.gateway.shutdown()
         except:
             return
-    
     def __getattr__(self, name):
         def method(*args,**kwargs):
             return getattr(self.gateway,name)(*args,**kwargs)

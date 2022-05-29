@@ -14,30 +14,17 @@ def parser():
     sleep(0.5)
 
     document="""
+
 simtime : 86400.0
 workload : 
-    path : '/usr/src/AMTS/AMTS python package/java/IoT_vehicleCount_7D_1S.csv'
+    path : '/usr/src/AMTS/AMTS python package/java/ysb.csv'
 
 orchestrator :
     min instances : 1
     max util : 1.0
     min util : 0.1
-    ConcurrencyValue : 10000
+    ConcurrencyValue : 20000
 hosts :
-    - host :
-        pes : 4
-        MIPS : 4000
-        RAM : 32768
-        BW : 10000
-        Storage : 100000
-
-    - host : 
-        pes : 4
-        MIPS : 4000
-        RAM : 32768
-        BW : 10000
-        Storage : 100000
-    
     - host :
         pes : 4
         MIPS : 4000
@@ -54,33 +41,21 @@ hosts :
 
 VMs :
     - VM :
-        pes : 2
+        pes : 4
         MIPS : 4000
-        RAM : 4000
+        RAM : 16250
         BW : 1000
         Storage : 1000
     
     - VM :
-        pes : 2
+        pes : 4
         MIPS : 4000
-        RAM : 4000
-        BW : 1000
-        Storage : 1000
-    
-    - VM :
-        pes : 2
-        MIPS : 4000
-        RAM : 4000
-        BW : 1000
-        Storage : 1000
-    
-    - VM :
-        pes : 2
-        MIPS : 4000
-        RAM : 4000
+        RAM : 16250
         BW : 1000
         Storage : 1000
 """
+    
+    
     # document = file('document.yaml', 'r')
     y = yaml.load(document,Loader=Loader)
     SIM_TIME=y['simtime']
@@ -88,11 +63,12 @@ VMs :
 
     s = Simulation(SIM_TIME)
     list = s.Create_HostList()
-    workload = s.Create_Workload(y["workload"]['path'])
+    workload = s.Create_Workload(path=y["workload"]['path'])
     o = y["orchestrator"]
-    Orchestration = s.Create_Orchestrator(o['min instances'],o['max util'],o['min util'],o['ConcurrencyValue'])
+    Orchestration = s.Create_Orchestrator(MinInstances=o['min instances'],maxutil=o['max util'],minutil=o['min util'],ConcurrencyValue=o['ConcurrencyValue'])
     Orchestration.setWorkLoad(workload.ParseCSV())
-    CPUMonitor = s.Create_CPUMonitor(False)
+    CPUMonitor = s.Create_CPUMonitor(WriteToFile=True,path='/usr/src/AMTS/AMTS python package/python',ReportMI=100,ReportBW=100)
+    
 
     def hosts(y):
         for host in y:
@@ -124,8 +100,8 @@ VMs :
         
     
     s.addOnClickTickListener(currentstatus)
-
     s.start()
+    
     s.stop_with_full_pbar(pbar,SIM_TIME)
     # s.stop(pbar)
 

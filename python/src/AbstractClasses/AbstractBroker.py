@@ -3,7 +3,7 @@ from src.simulation import Simulation
 
 class AbstractBroker(ABC):
     
-    class java: #if faced with a problem mighr try to dynamiclly add this class in __init__
+    class java: #if faced with a problem might try to dynamiclly add this class in __init__
         implements=["com.company.src.SimController.Interfaces.Broker.PythonBrokerInterface"]
 
     def __init__(self,sim:Simulation,name:str):

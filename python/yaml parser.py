@@ -9,13 +9,13 @@ from subprocess import Popen, PIPE
 def parser():
     
 
-    p =  Popen(['java','-jar','./java/AMTS-1.0-jar-with-dependencies.jar'], stdout=PIPE, bufsize=1, universal_newlines=True) 
+    p = Popen(['java','-jar','./java/AMTS-1.0-jar-with-dependencies.jar'], stdout=PIPE, bufsize=1, universal_newlines=True) 
 
     sleep(0.5)
 
     document="""
 
-simtime : 86400.0
+simtime : 604600.0
 workload : 
     path : '/usr/src/AMTS/AMTS python package/java/ysb.csv'
 
@@ -44,14 +44,14 @@ VMs :
         pes : 4
         MIPS : 4000
         RAM : 16250
-        BW : 1000
+        BW : 5000
         Storage : 1000
     
     - VM :
         pes : 4
         MIPS : 4000
         RAM : 16250
-        BW : 1000
+        BW : 5000
         Storage : 1000
 """
     

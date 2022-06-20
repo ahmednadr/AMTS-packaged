@@ -11,7 +11,11 @@ class AbstractContainer(ABC):
         self.Java.Submit_interface(self)
     
     @abstractmethod
-    def UpdateUtilization(self,utilizationModelDynamic):
+    def CPUUpdateUtilization(self,utilizationModelDynamic):
+        return NotImplementedError()
+    
+    @abstractmethod
+    def BWUpdateUtilization(self,utilizationModelDynamic):
         return NotImplementedError()
     
     @abstractmethod

@@ -18,9 +18,11 @@ def parser():
 simtime : 604600.0
 workload : 
     path : '/usr/src/AMTS/AMTS python package/java/ysb.csv'
-
+metrics:
+    path : '/usr/src/AMTS/AMTS python package/python'
+    reportMI: 100
+    reportBW: 10
 orchestrator :
-    min instances : 1
     max util : 1.0
     min util : 0.1
     ConcurrencyValue : 20000
@@ -65,10 +67,11 @@ VMs :
     list = s.Create_HostList()
     workload = s.Create_Workload(path=y["workload"]['path'])
     o = y["orchestrator"]
-    Orchestration = s.Create_Orchestrator(MinInstances=o['min instances'],maxutil=o['max util'],minutil=o['min util'],ConcurrencyValue=o['ConcurrencyValue'])
+    Orchestration = s.Create_Orchestrator(maxutil=o['max util'],minutil=o['min util'],ConcurrencyValue=o['ConcurrencyValue'])
     Orchestration.setWorkLoad(workload.ParseCSV())
-    CPUMonitor = s.Create_CPUMonitor(WriteToFile=True,path='/usr/src/AMTS/AMTS python package/python',ReportMI=100,ReportBW=100)
-    
+    CPUMonitor = s.Create_CPUMonitor(WriteToFile=True,path=y["metrics"]['path'],ReportMI=y["metrics"]['reportMI'],ReportBW=y["metrics"]['reportBW'])
+    BWMonitor = s.Create_BWMonitor(WriteToFile=True,path=y["metrics"]['path'],ReportMI=y["metrics"]['reportMI'],ReportBW=y["metrics"]['reportBW'])
+
 
     def hosts(y):
         for host in y:
@@ -88,6 +91,7 @@ VMs :
             vm = s.Create_Vm(MIPS=v['MIPS'],Pes=v['pes'],RAM=v['RAM'],BW=v['BW'],Storage=v['Storage'])
             Orchestration.submitVm(vm)
             CPUMonitor.add(vm)
+            BWMonitor.add(vm)
         return
 
     vms(y['VMs'])

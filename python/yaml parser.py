@@ -25,7 +25,7 @@ metrics:
 orchestrator :
     max util : 1.0
     min util : 0.1
-    ConcurrencyValue : 20000
+    ConcurrencyValue : 10000
 hosts :
     - host :
         pes : 4

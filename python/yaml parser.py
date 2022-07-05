@@ -6,11 +6,41 @@ from yaml import Loader
 from src.simulation import Simulation
 from subprocess import Popen, PIPE 
 
+import os
+from importlib.util import find_spec
+import glob
+
+def _contains_jar(path):
+    jar_file = path + "/AMTS-1.0-jar-with-dependencies.jar"
+    jar_file_matches = glob.glob(jar_file)
+    if len(jar_file_matches) > 0:
+        return jar_file_matches[0]
+    else:
+        return None
+
+def _find_java_module():
+    try:
+        current_dir = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
+        source_dir = os.path.abspath(current_dir + "/../")
+        build_target = glob.glob(source_dir + "/java/")
+        if len(build_target) > 0:
+            jar_path = _contains_jar(build_target[0])
+            if jar_path != None:
+              return jar_path
+
+        module_home = os.path.dirname(find_spec("java_integration_lib").origin)
+
+        jar_path = _contains_jar(module_home + "/jars")
+        if jar_path != None:
+            return jar_path
+    except Exception as e:
+        pass
+    print("Could not find valid jar in current environment.")
 
 def parser(document):
     
 
-    p = Popen(['java','-jar','./java/AMTS-1.0-jar-with-dependencies.jar','>','out.txt'], stdout=PIPE, bufsize=1, universal_newlines=True) 
+    p = Popen(['java','-jar',_find_java_module(),'>','out.txt'], stdout=PIPE, bufsize=1, universal_newlines=True) 
 
     sleep(0.5)
 
@@ -90,7 +120,7 @@ orchestrator :
     max util : 1.0
     min util : 0.1
     ConcurrencyValue : 10000
-    message size : 0.00064
+    message size : 0.0032
 hosts :
     - host :
         pes : 4
@@ -111,14 +141,14 @@ VMs :
         pes : 4
         MIPS : 4000
         RAM : 16250
-        BW : 3000
+        BW : 40
         Storage : 1000
     
     - VM :
         pes : 4
         MIPS : 4000
         RAM : 16250
-        BW : 3000
+        BW : 40
         Storage : 1000
 """
 

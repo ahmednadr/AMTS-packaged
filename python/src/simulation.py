@@ -55,7 +55,7 @@ class Simulation():
             self.ListenerCall(m,event)
         return
 
-    def start(self): #should start the jar file
+    def start(self): 
         return self.sim.start() 
     def stop(self):
         try:

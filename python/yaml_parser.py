@@ -5,7 +5,6 @@ import yaml
 from yaml import Loader
 from src.simulation import Simulation
 from subprocess import Popen, PIPE 
-
 import os
 from importlib.util import find_spec
 import glob
@@ -105,7 +104,6 @@ def parser(document):
     
 
     pbar.close()
-
 
 
 document="""

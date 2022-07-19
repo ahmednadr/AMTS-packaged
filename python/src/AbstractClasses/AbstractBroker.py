@@ -9,6 +9,7 @@ class AbstractBroker(ABC):
     def __init__(self,sim:Simulation,name:str):
         self.Java = sim.Create_PythonBroker(name)
         self.sim = sim
+        self.name = name
         self.Java.Submit_interface(self)
     
     @abstractmethod

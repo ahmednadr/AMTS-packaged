@@ -108,12 +108,12 @@ def parser(document):
 
 document="""
 
-simtime : 604600.0
+simtime : 86400.0
 workload : 
-    path : '/usr/src/AMTS/AMTS python package/java/ysb.csv'
+    path : '/usr/src/AMTS/AMTS_python_package/java/ysb.csv'
 metrics:
-    path : '/usr/src/AMTS/AMTS python package/python/metrics 1'
-    reportBW: 0.1
+    path : '/usr/src/AMTS/AMTS_python_package/python/metrics 1'
+    reportBW: 1.0
 orchestrator :
     max util : 1.0
     min util : 0.1

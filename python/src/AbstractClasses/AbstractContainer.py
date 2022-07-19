@@ -6,8 +6,13 @@ class AbstractContainer(ABC):
     class java: #if faced with a problem mighr try to dynamiclly add this class in __init__
         implements=["com.company.src.SimController.Interfaces.Container.PythonContainerInterface"]
 
-    def __init__(self,pes:int,minUtilization:float,maxUtilization:float,ConcurrencyValue:int):
-        self.Java = sim.Create_PythonContainer( pes,  minUtilization,  maxUtilization,  ConcurrencyValue) 
+    def __init__(self,pes:int,minUtilization:float,maxUtilization:float,ConcurrencyValue:int,s:sim):
+        self.pes = pes
+        self.minUtilization = minUtilization
+        self.maxUtilization = maxUtilization
+        self.ConcurrencyValue = ConcurrencyValue
+        self.sim = s
+        self.Java = s.Create_PythonContainer( pes,  minUtilization,  maxUtilization,  ConcurrencyValue) 
         self.Java.Submit_interface(self)
     
     @abstractmethod

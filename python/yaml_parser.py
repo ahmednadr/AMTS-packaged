@@ -3,7 +3,7 @@ from tqdm import tqdm
 from time import sleep
 import yaml
 from yaml import Loader
-from src.simulation import Simulation
+from AMTS_python_package.python.src.simulation import Simulation
 from subprocess import Popen, PIPE 
 import os
 from importlib.util import find_spec
@@ -36,118 +36,98 @@ def _find_java_module():
         pass
     print("Could not find valid jar in current environment.")
 
-def parser(document):
+
+
+class parser():
+
+    def __init__(self) -> None:
+        self.sim = 0
+        self.simtime = 0
+        self.bar = 0
+        self.vms = []
+        self.CPUMonitor = 0
+        self.BWMonitor = 0
+        
+    def parse(self,document):
     
 
-    p = Popen(['java','-jar',_find_java_module(),'>','out.txt'], stdout=PIPE, bufsize=1, universal_newlines=True) 
+        p = Popen(['java','-jar',_find_java_module(),'>','out.txt'], stdout=PIPE, bufsize=1, universal_newlines=True) 
 
-    sleep(0.5)
-
-    
-    
-    # document = file('document.yaml', 'r')
-    y = yaml.load(document,Loader=Loader)
-    SIM_TIME=y['simtime']
-
-
-    s = Simulation(SIM_TIME)
-    list = s.Create_HostList()
-    workload = s.Create_Workload(path=y["workload"]['path'])
-    o = y["orchestrator"]
-    Orchestration = s.Create_Orchestrator(maxutil=o['max util'],minutil=o['min util'],ConcurrencyValue=o['ConcurrencyValue'],MessageSize=o['message size'])
-    Orchestration.setWorkLoad(workload.ParseCSV())
-    CPUMonitor = s.Create_CPUMonitor(WriteToFile=True,path=y["metrics"]['path'],ReportBW=y["metrics"]['reportBW'])
-    BWMonitor = s.Create_BWMonitor(WriteToFile=True,path=y["metrics"]['path'],ReportBW=y["metrics"]['reportBW'])
-
-
-    def hosts(y):
-        for host in y:
-            h=host['host']
-            host = s.Create_Host(Pes=h['pes'],MIPS=h['MIPS'],RAM=h['RAM'],BW=h['BW'],Storage=h['Storage'])
-            list.add(host)
-        return list
-
-
-    datacenter = s.Create_Datacenter(hosts(y['hosts']))
+        sleep(0.5)
 
     
+    
+        # document = file('document.yaml', 'r')
+        y = yaml.load(document,Loader=Loader)
+        SIM_TIME=y['simtime']
 
-    def vms(y):
-        x = 1
-        for vm in y:
-            v = vm['VM']
-            vm = s.Create_Vm(MIPS=v['MIPS'],Pes=v['pes'],RAM=v['RAM'],BW=v['BW'],Storage=v['Storage'])
-            Orchestration.submitVm(vm)
-            CPUMonitor.add(vm)
-            BWMonitor.add(vm)
-            x = vm
-        return x
 
-    vm1 = vms(y['VMs'])
-    
-    pbar = tqdm(total=SIM_TIME,delay=0.1,unit_scale=True,unit_divisor=1)
-    
+        s = Simulation(SIM_TIME)
+        self.sim = s
+        list = s.Create_HostList()
+        workload = s.Create_Workload(path=y["workload"]['path'])
+        o = y["orchestrator"]
+        Orchestration = s.Create_Orchestrator(maxutil=o['max util'],minutil=o['min util'],ConcurrencyValue=o['ConcurrencyValue'],MessageSize=o['message size'])
+        Orchestration.setWorkLoad(workload.ParseCSV())
+        CPUMonitor = s.Create_CPUMonitor(WriteToFile=True,path=y["metrics"]['path'],ReportBW=y["metrics"]['reportBW'])
+        BWMonitor = s.Create_BWMonitor(WriteToFile=True,path=y["metrics"]['path'],ReportBW=y["metrics"]['reportBW'])
+        self.CPUMonitor = CPUMonitor
+        self.BWMonitor = BWMonitor
 
-    def currentstatus(e):
-        pbar.update(0.1)
-    
-    def moni(e):
-        if(e.getTime()%100 != 0):
-            return
-        f = CPUMonitor.getVmCurrentpercentage(vm1)
-    
-    s.addOnClickTickListener(currentstatus)
-    s.addOnClickTickListener(moni)
-    s.start()
-    
-    s.stop_with_full_pbar(pbar,SIM_TIME)
+        def hosts(y):
+            for host in y:
+                h=host['host']
+                host = s.Create_Host(Pes=h['pes'],MIPS=h['MIPS'],RAM=h['RAM'],BW=h['BW'],Storage=h['Storage'])
+                list.add(host)
+            return list
+
+
+        datacenter = s.Create_Datacenter(hosts(y['hosts']))
+
     
 
-    pbar.close()
+        def vms(y):
+            
+            for vm in y:
+                v = vm['VM']
+                vm = s.Create_Vm(MIPS=v['MIPS'],Pes=v['pes'],RAM=v['RAM'],BW=v['BW'],Storage=v['Storage'])
+                Orchestration.submitVm(vm)
+                CPUMonitor.add(vm)
+                BWMonitor.add(vm)
+                self.vms.append(vm)
+            
 
-
-document="""
-
-simtime : 86400.0
-workload : 
-    path : '/usr/src/AMTS/AMTS_python_package/java/ysb.csv'
-metrics:
-    path : '/usr/src/AMTS/AMTS_python_package/python/metrics 1'
-    reportBW: 1.0
-orchestrator :
-    max util : 1.0
-    min util : 0.1
-    ConcurrencyValue : 10000
-    message size : 0.0032
-hosts :
-    - host :
-        pes : 4
-        MIPS : 4000
-        RAM : 32768
-        BW : 10000
-        Storage : 100000
-
-    - host : 
-        pes : 4
-        MIPS : 4000
-        RAM : 32768
-        BW : 10000
-        Storage : 100000
-
-VMs :
-    - VM :
-        pes : 4
-        MIPS : 4000
-        RAM : 16250
-        BW : 40
-        Storage : 1000
+        vms(y['VMs'])
+        # vm1 = self.vms[-1]
     
-    - VM :
-        pes : 4
-        MIPS : 4000
-        RAM : 16250
-        BW : 40
-        Storage : 1000
-"""
+        pbar = tqdm(total=SIM_TIME,delay=0.1,unit_scale=True,unit_divisor=1)
+        self.bar = pbar
 
-parser(document)
+        def currentstatus(e):
+            pbar.update(0.1)
+    
+        
+    
+        s.addOnClockTickListener(currentstatus)
+        
+       
+
+    def run(self):
+        if self.sim == 0:
+            raise ValueError("parse first")
+
+        self.sim.start()
+    
+        self.sim.stop_with_full_pbar(self.bar,self.simtime)
+    
+        self.bar.close()
+
+    def Monitor_last_vm (self):
+        def moni(e):
+            if(e.getTime()%100 != 0):
+                return
+            f = self.CPUMonitor.getVmCurrentpercentage(self.vms[-1])
+        self.sim.addOnClockTickListener(moni)
+
+    def addOnClockTickListener(self,method):
+        self.sim.addOnClockTickListener(method)

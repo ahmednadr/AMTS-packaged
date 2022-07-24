@@ -42,7 +42,7 @@ class Simulation():
     def Crate_PythonContainer(self,pes:int,minUtilization:float,maxUtilization:float,ConcurrencyValue:int):
         return self.gateway.Create_PythonContainer(pes, minUtilization,  maxUtilization, ConcurrencyValue )
     
-    def addOnClickTickListener(self,method): #method must have signature (event)
+    def addOnClockTickListener(self,method): #method must have signature (event)
         self.onClockTickListenerList.append(method)
         return
     

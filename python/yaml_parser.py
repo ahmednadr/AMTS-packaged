@@ -3,7 +3,7 @@ from tqdm import tqdm
 from time import sleep
 import yaml
 from yaml import Loader
-from AMTS_python_package.python.src.simulation import Simulation
+from python.src.simulation import Simulation
 from subprocess import Popen, PIPE 
 import os
 from importlib.util import find_spec

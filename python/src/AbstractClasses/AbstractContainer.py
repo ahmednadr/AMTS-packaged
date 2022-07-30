@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.simulation import Simulation as sim
+from ..simulation import Simulation as sim
 
 class AbstractContainer(ABC):
     

@@ -1,5 +1,5 @@
 from python.yaml_parser import parser
-from darts.models import RNNModel
+# from darts.models import RNNModel
 import pandas as pd
 import numpy as np
 
@@ -10,7 +10,7 @@ LAST_PREDICTION_TIME = 0.0
 
 document="""
 
-simtime : 86400.0
+simtime : 600000.0
 workload : 
     path : '/usr/src/AMTS/AMTS_python_package/java/ysb.csv'
 metrics:
@@ -23,14 +23,14 @@ orchestrator :
     message size : 0.0032
 hosts :
     - host :
-        pes : 4
+        pes : 6
         MIPS : 4000
         RAM : 32768
         BW : 10000
         Storage : 100000
 
     - host : 
-        pes : 4
+        pes : 6
         MIPS : 4000
         RAM : 32768
         BW : 10000
@@ -38,14 +38,14 @@ hosts :
 
 VMs :
     - VM :
-        pes : 4
+        pes : 6
         MIPS : 4000
         RAM : 16250
         BW : 40
         Storage : 1000
     
     - VM :
-        pes : 4
+        pes : 6
         MIPS : 4000
         RAM : 16250
         BW : 40
@@ -53,11 +53,11 @@ VMs :
 """
 test = parser()
 test.parse(document)
-model = RNNModel.load_model("./monitor/_model.pth.tar")
-window = pd.Series()
-import csv
+# model = RNNModel.load_model("./monitor/_model.pth.tar")
+# window = pd.Series()
+# import csv
 
-header = ['time in seconds', 'val']
+# header = ['time in seconds', 'val']
 
 
 
@@ -101,7 +101,7 @@ header = ['time in seconds', 'val']
 #     window = window[-100:]
     
 
-test.addOnClockTickListener(p)
+# test.addOnClockTickListener(p)
 
 test.Monitor_last_vm()
 

@@ -36,8 +36,8 @@ class Simulation():
     def Create_Datacenter(self,HostList):
         return self.gateway.Create_Datacenter(self.sim,HostList)
     
-    def Create_PythonBroker(self ,name:str):
-        return self.gateway.Create_PythonBroker(self.sim, name)
+    def Create_PythonBroker(self, Min:float ,  Max:float ,  ConcurrencyValue:int ,  MessageSize:float):
+        return self.gateway.Create_PythonBroker( self.sim ,Min ,Max,ConcurrencyValue ,  MessageSize)
     
     def Crate_PythonContainer(self,pes:int,minUtilization:float,maxUtilization:float,ConcurrencyValue:int):
         return self.gateway.Create_PythonContainer(pes, minUtilization,  maxUtilization, ConcurrencyValue )
